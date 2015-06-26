@@ -23,6 +23,7 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.sina.weibo.universalimageloader.cache.disc.DiskCache;
+import com.sina.weibo.universalimageloader.cache.disc.DiskCacheFolder;
 import com.sina.weibo.universalimageloader.cache.memory.MemoryCache;
 import com.sina.weibo.universalimageloader.core.assist.FailReason;
 import com.sina.weibo.universalimageloader.core.assist.FlushedInputStream;
@@ -34,6 +35,7 @@ import com.sina.weibo.universalimageloader.core.imageaware.ImageViewAware;
 import com.sina.weibo.universalimageloader.core.imageaware.NonViewAware;
 import com.sina.weibo.universalimageloader.core.listener.ImageLoadingListener;
 import com.sina.weibo.universalimageloader.core.listener.ImageLoadingProgressListener;
+import com.sina.weibo.universalimageloader.core.listener.ImageLoadingProgressListener2;
 import com.sina.weibo.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.sina.weibo.universalimageloader.utils.ImageSizeUtils;
 import com.sina.weibo.universalimageloader.utils.L;
@@ -561,21 +563,6 @@ public class ImageLoader {
     }
     
     /**
-     * compatiable weibo call
-     * @param uri
-     * @param loadingListener
-     * @param loadingProgressListener
-     * @return
-     */
-    public String loadImage(String uri, ImageLoadingListener loadingListener, ImageLoadingProgressListener loadingProgressListener) {
-        DisplayImageOptions options = configuration.defaultDisplayImageOptions;
-        options = new DisplayImageOptions.Builder().cloneFrom(options).syncLoading(true).build();
-        NonViewAware imageAware = new NonViewAware(uri, configuration.getMaxImageSize(), ViewScaleType.CROP);
-        displayImage(uri, imageAware, options, loadingListener, loadingProgressListener);
-        return getDiskCache().get(uri).getAbsolutePath();
-    }
-
-    /**
      * Checks if ImageLoader's configuration was initialized
      *
      * @throws IllegalStateException if configuration wasn't initialized
@@ -783,10 +770,18 @@ public class ImageLoader {
     }
     
     //####################################################NEW API####################################################
-    public String loadImageSync(String uri, ImageLoadingListener listener, ImageLoadingProgressListener progressListener) {
-        return loadImageSync(uri, listener, progressListener, null);
+    public String loadImageSync(String uri, DiskCacheFolder folder) {
+        return loadImageSync(uri, folder, null);
     }
-    
+
+    public String loadImageSync(String uri, DiskCacheFolder folder, ImageLoadingProgressListener2 listener) {
+        if (null == folder) {
+            folder = DiskCacheFolder.DEFAULT;
+        }
+        DisplayImageOptions options = new DisplayImageOptions.Builder().diskCacheSubDir(folder).syncLoading(true).build();
+        return loadImageSync(uri, listener, listener, options);
+    }
+
     public String loadImageSync(String uri, ImageLoadingListener listener, ImageLoadingProgressListener progressListener,
             DisplayImageOptions options) {
         if (null == options) {
