@@ -86,6 +86,7 @@ public final class DisplayImageOptions {
 	private final BitmapDisplayer displayer;
 	private final Handler handler;
 	private final boolean isSyncLoading;
+	private final boolean inRealTime;
 
 	private DisplayImageOptions(Builder builder) {
 		imageResOnLoading = builder.imageResOnLoading;
@@ -108,6 +109,7 @@ public final class DisplayImageOptions {
 		handler = builder.handler;
 		isSyncLoading = builder.isSyncLoading;
 		diskCacheSubDir = builder.diskCacheSubDir;
+		inRealTime = builder.inRealTime;
 	}
 
 	public boolean shouldShowImageOnLoading() {
@@ -201,6 +203,9 @@ public final class DisplayImageOptions {
 	public DiskCacheFolder getDiskCacheSubDir() {
 	    return diskCacheSubDir;
 	}
+	public boolean inRealTime() {
+	    return inRealTime;
+	}
 
 	/**
 	 * Builder for {@link DisplayImageOptions}
@@ -228,7 +233,7 @@ public final class DisplayImageOptions {
 		private Handler handler = null;
 		private boolean isSyncLoading = false;
 		private DiskCacheFolder diskCacheSubDir = DiskCacheFolder.DEFAULT;
-
+		private boolean inRealTime = false;
 		public Builder() {
 			decodingOptions.inPurgeable = true;
 			decodingOptions.inInputShareable = true;
@@ -460,9 +465,23 @@ public final class DisplayImageOptions {
 			return this;
 		}
 		
+		/**
+		 * Sets cache dir
+		 * @param isRealTime DEFAULT false
+		 * @return
+		 */
 		public Builder diskCacheSubDir(DiskCacheFolder folder) {
 		    this.diskCacheSubDir = folder;
 		    extraForDownloader(folder);
+		    return this;
+		}
+		/**
+		 * Sets whether loaded image in real time.
+		 * @param isRealTime DEFAULT false
+		 * @return
+		 */
+		public Builder inRealTime(boolean isRealTime) {
+		    this.inRealTime = isRealTime;
 		    return this;
 		}
 

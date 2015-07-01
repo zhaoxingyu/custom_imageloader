@@ -65,6 +65,11 @@ public class DefaultConfigurationFactory {
 	public static Executor createTaskDistributor() {
 		return Executors.newCachedThreadPool(createThreadFactory(Thread.NORM_PRIORITY, "uil-pool-d-"));
 	}
+	
+	/** Creates real time task */
+	public static Executor createRealTimeTask() {
+	    return Executors.newCachedThreadPool(createThreadFactory(Thread.NORM_PRIORITY + 2, "uil-pool-irt-"));
+	}
 
 	/** Creates {@linkplain HashCodeFileNameGenerator default implementation} of FileNameGenerator */
 	public static FileNameGenerator createFileNameGenerator() {

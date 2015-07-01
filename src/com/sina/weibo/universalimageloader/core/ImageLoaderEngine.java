@@ -45,6 +45,7 @@ class ImageLoaderEngine {
 	private Executor taskExecutor;
 	private Executor taskExecutorForCachedImages;
 	private Executor taskDistributor;
+	private Executor taskRealTimeExecutor;
 
 	private final Map<Integer, String> cacheKeysForImageAwares = Collections
 			.synchronizedMap(new HashMap<Integer, String>());
@@ -56,6 +57,7 @@ class ImageLoaderEngine {
 
 	private final Object pauseLock = new Object();
 
+
 	ImageLoaderEngine(ImageLoaderConfiguration configuration) {
 		this.configuration = configuration;
 
@@ -63,6 +65,7 @@ class ImageLoaderEngine {
 		taskExecutorForCachedImages = configuration.taskExecutorForCachedImages;
 
 		taskDistributor = DefaultConfigurationFactory.createTaskDistributor();
+		taskRealTimeExecutor = DefaultConfigurationFactory.createRealTimeTask();
 	}
 
 	/** Submits task to execution pool */
@@ -76,7 +79,11 @@ class ImageLoaderEngine {
 				if (isImageCachedOnDisk) {
 					taskExecutorForCachedImages.execute(task);
 				} else {
-					taskExecutor.execute(task);
+				    if (task.options.inRealTime()) {
+				        taskRealTimeExecutor.execute(task);
+                    } else {
+                        taskExecutor.execute(task);
+                    }
 				}
 			}
 		});
