@@ -19,33 +19,33 @@ public class FileUtils {
         if (!dir.exists() || !dir.isDirectory()) {
             return;
         }
-        new Thread() {
-            public void run() {
-                tryDeleteHalf(dir, maxFileNum);
-            };
-        }.start();
+        boolean confirm = dir.list().length > maxFileNum;
+        if (confirm) {
+            new Thread() {
+                public void run() {
+                    tryDeleteHalf(dir, maxFileNum);
+                };
+            }.start();
+        }
     }
 
     private static synchronized void tryDeleteHalf(File dir, int maxFileNum) {
         try {
-            boolean confirm = dir.list().length > maxFileNum;
-            if (confirm) {
-                File[] list = dir.listFiles();
-                int fileNum = list.length;
-                int halfCapacity = maxFileNum / 2;
-                if (fileNum > halfCapacity) {
-                    Arrays.sort(list, new Comparator<File>() {
-                        @Override
-                        public int compare(File lhs, File rhs) {
-                            return lhs.lastModified() > rhs.lastModified() ? 1 : 0;
-                        }
-                    });
-                    int deleteCount = 0;
-                    for (int i = 0; i < fileNum && (fileNum - deleteCount > halfCapacity); i++) {
-                        if (list[i].exists() && list[i].canWrite()) {
-                            list[i].delete();
-                            deleteCount++;
-                        }
+            File[] list = dir.listFiles();
+            int fileNum = list.length;
+            int halfCapacity = maxFileNum / 2;
+            if (fileNum > halfCapacity) {
+                Arrays.sort(list, new Comparator<File>() {
+                    @Override
+                    public int compare(File lhs, File rhs) {
+                        return lhs.lastModified() > rhs.lastModified() ? 1 : 0;
+                    }
+                });
+                int deleteCount = 0;
+                for (int i = 0; i < fileNum && (fileNum - deleteCount > halfCapacity); i++) {
+                    if (list[i].exists() && list[i].canWrite()) {
+                        list[i].delete();
+                        deleteCount++;
                     }
                 }
             }

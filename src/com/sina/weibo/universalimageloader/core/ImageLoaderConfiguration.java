@@ -128,7 +128,7 @@ public final class ImageLoaderConfiguration {
 		return new Builder(context).build();
 	}
 
-	ImageSize getMaxImageSize() {
+	public ImageSize getMaxImageSize() {
 		DisplayMetrics displayMetrics = resources.getDisplayMetrics();
 
 		int width = maxImageWidthForMemoryCache;

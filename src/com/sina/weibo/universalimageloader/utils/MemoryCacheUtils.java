@@ -22,6 +22,7 @@ import java.util.List;
 import android.graphics.Bitmap;
 
 import com.sina.weibo.universalimageloader.cache.memory.MemoryCache;
+import com.sina.weibo.universalimageloader.core.ImageLoader;
 import com.sina.weibo.universalimageloader.core.ImageLoaderConfiguration;
 import com.sina.weibo.universalimageloader.core.assist.ImageSize;
 
@@ -44,6 +45,9 @@ public final class MemoryCacheUtils {
 	 * Pattern for cache key - <b>[imageUri]_[width]x[height]</b>.
 	 */
 	public static String generateKey(String imageUri, ImageSize targetSize) {
+	    if (null == targetSize) {
+            targetSize = ImageLoader.getInstance().getConfig().getMaxImageSize();
+        }
 		return new StringBuilder(imageUri).append(URI_AND_SIZE_SEPARATOR).append(targetSize.getWidth()).append(WIDTH_AND_HEIGHT_SEPARATOR).append(targetSize.getHeight()).toString();
 	}
 

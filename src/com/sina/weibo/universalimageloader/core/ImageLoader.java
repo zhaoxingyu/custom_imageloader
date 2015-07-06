@@ -39,6 +39,7 @@ import com.sina.weibo.universalimageloader.core.listener.ImageLoadingProgressLis
 import com.sina.weibo.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.sina.weibo.universalimageloader.utils.ImageSizeUtils;
 import com.sina.weibo.universalimageloader.utils.L;
+import com.sina.weibo.universalimageloader.utils.MemoryCacheUtils;
 
 /**
  * Singletone for image loading and displaying at {@link ImageView ImageViews}<br />
@@ -232,7 +233,7 @@ public class ImageLoader {
         }
 
         ImageSize targetSize = ImageSizeUtils.defineTargetSizeForView(imageAware, configuration.getMaxImageSize());
-        String memoryCacheKey = uri;
+        String memoryCacheKey = MemoryCacheUtils.generateKey(uri, targetSize);
         engine.prepareDisplayTaskFor(imageAware, memoryCacheKey);
 
         listener.onLoadingStarted(uri, imageAware.getWrappedView());
