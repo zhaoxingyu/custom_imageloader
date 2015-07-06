@@ -33,11 +33,11 @@ public class FileUtils {
         String key = dir.getAbsolutePath();
         Integer folderSize = mCacheFolderSize.get(key);
         if (null == folderSize || 0 == folderSize) {
-            mCacheFolderSize.put(key, dir.list().length);
+            folderSize = dir.list().length;
         } else {
             folderSize = folderSize + 1;
-            mCacheFolderSize.put(key, folderSize);
         }
+        mCacheFolderSize.put(key, folderSize);
 
         boolean overSize = folderSize > maxFileNum;
         if (overSize) {
