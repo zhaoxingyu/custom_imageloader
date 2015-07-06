@@ -211,13 +211,18 @@ public abstract class BaseDiscCache implements DiskCache {
 
     @Override
     public File get(String imageUri, DiskCacheFolder folder) {
+        File dstFile = null;
         String fileName = fileNameGenerator.generate(imageUri);
         File dir = getDirectory(folder);
-        FileUtils.adjustFolderSize(dir, folder.getCapacity());
         if (imageUri.toLowerCase().endsWith(".gif")) {
-            return new File(dir, fileName + ".gif");
+            dstFile = new File(dir, fileName + ".gif");
+        } else {
+            dstFile = new File(dir, fileName);
         }
-        return new File(dir, fileName);
+        if (null != dstFile && !dstFile.exists()) {
+            FileUtils.adjustFolderSize(dir, folder.getCapacity());
+        }
+        return dstFile;
     }
 
     public void setBufferSize(int bufferSize) {
